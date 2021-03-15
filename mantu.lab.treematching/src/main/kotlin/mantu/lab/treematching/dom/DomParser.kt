@@ -2,11 +2,18 @@ package mantu.lab.treematching.dom
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Attribute
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 public data class ParsingSettings(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
 
-public class DomParser(val settings: ParsingSettings) {
+public class DomParser(val settings: ParsingSettings = ParsingSettings()) {
+    companion object { public fun webpageToTree(source: String) = DomParser().webpageToTree(source) }
+
+    public fun webpageToTree(source: String) : List<Node> {
+        val doc = Jsoup.parse(source)
+        return domToTree(doc)
+    }
 
     private fun tokenizeValue(value: String): List<String> {
         val valueTokens = value
@@ -51,6 +58,21 @@ public class DomParser(val settings: ParsingSettings) {
         return partialXPath + "/${el.tagName()}" + brackets
     }
 
+    private fun domToTree(doc: Document) : List<Node> {
+        val nodes = mutableListOf<Node>()
+        fun copy(el: Element, parent: Element?, parentNode: Node?, partialXPath: String) {
+            val newXPath = getNewXPath(el, parent, partialXPath)
+            val tokenizedNode = tokenizeNode(el) + newXPath
+            val node = Node(
+                value = tokenizedNode,
+                signature = el.attr(settings.signatureAttribute),
+                parent = parentNode
+            )
+            nodes.add(node)
+            el.children().forEach { child -> copy(child, el, node, newXPath) }
+        }
+        copy(doc.body(), null, null, "")
 
-
+        return nodes
+    }
 }
