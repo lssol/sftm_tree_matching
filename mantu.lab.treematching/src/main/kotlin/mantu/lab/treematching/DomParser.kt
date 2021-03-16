@@ -1,13 +1,13 @@
-package mantu.lab.treematching.dom
+package mantu.lab.treematching
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Attribute
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-public data class ParsingSettings(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
+public data class DomParserSettings(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
 
-public class DomParser(val settings: ParsingSettings = ParsingSettings()) {
+public class DomParser(val settings: DomParserSettings = DomParserSettings()) {
     companion object { public fun webpageToTree(source: String) = DomParser().webpageToTree(source) }
 
     public fun webpageToTree(source: String) : List<Node> {
@@ -60,7 +60,7 @@ public class DomParser(val settings: ParsingSettings = ParsingSettings()) {
 
     private fun domToTree(doc: Document) : List<Node> {
         val nodes = mutableListOf<Node>()
-        fun copy(el: Element, parent: Element?, parentNode: Node?, partialXPath: String) {
+        fun copy(el: Element, parent: Element?, parentNode: Node?, partialXPath: String) : Node {
             val newXPath = getNewXPath(el, parent, partialXPath)
             val tokenizedNode = tokenizeNode(el) + newXPath
             val node = Node(
@@ -69,7 +69,12 @@ public class DomParser(val settings: ParsingSettings = ParsingSettings()) {
                 parent = parentNode
             )
             nodes.add(node)
-            el.children().forEach { child -> copy(child, el, node, newXPath) }
+            el.children().forEach { child ->
+                val childNode = copy(child, el, node, newXPath)
+                node.children.add(childNode)
+            }
+
+            return node
         }
         copy(doc.body(), null, null, "")
 
