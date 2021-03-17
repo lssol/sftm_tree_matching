@@ -8,6 +8,22 @@ public data class PropagationParameters(
         val envelop: List<Double> = listOf(0.9, 0.1, 0.01)
 )
 
+public fun propagateSimilarity(neighbors: Neighbors, currentEnvelop: Double, settings: PropagationParameters = PropagationParameters()) {
+    val newSimilarity = Neighbors()
+    neighbors.forEachPair { source, target, score ->
+        increaseScore(newSimilarity, source, target, score)
+        val pSource = source.parent
+        val pTarget = target.parent
+
+        if (pSource == null || pTarget == null)
+            return@forEachPair
+
+        val parentScore = neighbors.score(pSource, pTarget)
+        increaseScore(newSimilarity, source, target, currentEnvelop * parentScore * settings.parent)
+        increaseScore(newSimilarity, pSource, pTarget, currentEnvelop * score * settings.parentInv)
+    }
+}
+
 private fun increaseScore(neighbors: Neighbors, sourceNode: Node, targetNode: Node, incr: Double) {
     if (abs(incr) < 0.001)
         return
@@ -24,18 +40,3 @@ private fun increaseScore(neighbors: Neighbors, sourceNode: Node, targetNode: No
         neighbors[targetNode] = hits
 }
 
-public fun propagateSimilarity(neighbors: Neighbors, settings: PropagationParameters, currentEnvelop: Double) {
-    val newSimilarity = Neighbors()
-    neighbors.forEachPair { source, target, score ->
-        increaseScore(newSimilarity, source, target, score)
-        val pSource = source.parent
-        val pTarget = target.parent
-
-        if (pSource == null || pTarget == null)
-            return@forEachPair
-
-        val parentScore = neighbors.score(pSource, pTarget)
-        increaseScore(newSimilarity, source, target, currentEnvelop * parentScore * settings.parent)
-        increaseScore(newSimilarity, pSource, pTarget, currentEnvelop * score * settings.parentInv)
-    }
-}

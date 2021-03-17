@@ -9,8 +9,7 @@ public class Node(
 )
 
 public class Edge(
-    val source: Node,
-    val target: Node,
+    val source: Node?,
+    val target: Node?,
     val score: Double,
-    public var normalizedScore: Double = 0.0
 )
