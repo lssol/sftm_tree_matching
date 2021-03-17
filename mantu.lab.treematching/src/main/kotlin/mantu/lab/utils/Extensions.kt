@@ -17,3 +17,20 @@ public fun <T> List<T>.average(f: (v:T) -> Number): Double {
 
     return sum / count
 }
+
+public fun <U, T, G> Iterable<U>.toMap(projKey: ((v:U) -> T), projValue: ((v:U) -> G)): HashMap<T, G> {
+    val kvPair = this.map { Pair(projKey(it), projValue(it)) }
+    return HashMap(kvPair.toMap())
+}
+
+//public fun <T> List<T>.minBy(f: (v:T) -> Number): Double {
+//    var min = 0.0
+//
+//    this.forEach {
+//        val v = f(it).toDouble()
+//        if(v < min)
+//            min = v
+//    }
+//
+//    return min
+//}

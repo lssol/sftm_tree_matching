@@ -1,19 +1,19 @@
 package mantu.lab.treematching
 
 import kotlin.math.ln
-import kotlin.math.truncate
 
-data class InMemoryIndexerSettings(val maxNeighborsPerNode: Int = 100, val maxTokenAppearance: Int)
 
-class InMemoryIndex(private val settings: InMemoryIndexerSettings) {
+class InMemoryIndex(private val params: Parameters) {
+    data class Parameters(val maxNeighborsPerNode: Int = 100, val maxTokenAppearance: Int)
+
     private val index: HashMap<String, MutableList<Node>> = HashMap()
     private val nodes: HashSet<Node> = HashSet()
     private val removedTokens: HashSet<String> = HashSet()
     private var idfPrecomputation: Double = 0.0
 
     companion object InMemoryIndexer {
-        public fun buildIndex(sourceNodes: List<Node>, settings: InMemoryIndexerSettings): InMemoryIndex {
-            val index = InMemoryIndex(settings)
+        public fun buildIndex(sourceNodes: List<Node>, params: Parameters): InMemoryIndex {
+            val index = InMemoryIndex(params)
             sourceNodes.forEach { node -> node.value.forEach { value -> index.add(value, node) } }
             index.precomputeIdf()
 
@@ -38,7 +38,7 @@ class InMemoryIndex(private val settings: InMemoryIndexerSettings) {
 
         when {
             removedTokens.contains(token)                    -> Unit
-            nbTokenAppearance >= settings.maxTokenAppearance -> removedTokens.add(token)
+            nbTokenAppearance >= params.maxTokenAppearance -> removedTokens.add(token)
             index.containsKey(token)                         -> index[token]!!.add(node)
             else                                             -> index[token] = mutableListOf(node)
         }
@@ -69,7 +69,7 @@ class InMemoryIndex(private val settings: InMemoryIndexerSettings) {
         val map = hits
             .toList()
             .sortedBy { it.second }
-            .take(settings.maxNeighborsPerNode)
+            .take(params.maxNeighborsPerNode)
             .toMap()
 
         return HashMap(map)

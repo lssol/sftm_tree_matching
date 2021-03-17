@@ -5,11 +5,10 @@ import org.jsoup.nodes.Attribute
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-public data class DomParserSettings(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
 
-public class DomParser(val settings: DomParserSettings = DomParserSettings()) {
+public class DomParser(val params: Parameters = Parameters()) {
     companion object { public fun webpageToTree(source: String) = DomParser().webpageToTree(source) }
-
+    public data class Parameters(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
     public fun webpageToTree(source: String) : List<Node> {
         val doc = Jsoup.parse(source)
         return domToTree(doc)
@@ -24,13 +23,13 @@ public class DomParser(val settings: DomParserSettings = DomParserSettings()) {
         return when (valueTokens.count()) {
             0                                -> emptyList()
             1                                -> valueTokens
-            in 2..settings.maxTokensPerValue -> valueTokens + value
+            in 2..params.maxTokensPerValue -> valueTokens + value
             else                             -> listOf(value)
         }
     }
 
     private fun tokenizeAttribute(attr: Attribute): List<String> {
-        val isIgnored = attr.key == settings.signatureAttribute
+        val isIgnored = attr.key == params.signatureAttribute
                         || attr.key.startsWith("data")
 
         return when {
@@ -65,7 +64,7 @@ public class DomParser(val settings: DomParserSettings = DomParserSettings()) {
             val tokenizedNode = tokenizeNode(el) + newXPath
             val node = Node(
                 value = tokenizedNode,
-                signature = el.attr(settings.signatureAttribute),
+                signature = el.attr(params.signatureAttribute),
                 parent = parentNode
             )
             nodes.add(node)

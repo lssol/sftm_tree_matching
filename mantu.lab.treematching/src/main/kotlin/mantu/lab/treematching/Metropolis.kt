@@ -94,6 +94,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
                 break
             }
         }
+
         return newMatching
     }
 }
