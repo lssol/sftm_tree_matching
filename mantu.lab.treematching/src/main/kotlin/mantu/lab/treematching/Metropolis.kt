@@ -21,8 +21,30 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
     val newMatching = ArrayList<Edge>(nbNodes + 10)
     var linkedEdges = LinkedList<Edge>()
 
-    init {
-        computeNodeToEdgesDic()
+    init { computeNodeToEdgesDic() }
+
+    public fun run(): ArrayList<Edge> {
+        var currentMatching = suggestMatching(listOf())
+        var currentObjective = computeObjective(currentMatching)
+
+        var maxObjective = currentObjective
+        var bestMatching = currentMatching
+
+        for (i in 0..parameters.nbIterations) {
+            val matching = suggestMatching(currentMatching)
+            val objective = computeObjective(matching)
+            val acceptanceRatio = objective / currentObjective
+            if (Random.nextDouble() > acceptanceRatio)
+                continue
+            currentMatching = matching
+            currentObjective = objective
+            if (currentObjective <= maxObjective)
+                continue
+            maxObjective = currentObjective
+            bestMatching = currentMatching
+        }
+
+        return bestMatching
     }
 
     private fun computeNodeToEdgesDic() {
@@ -55,7 +77,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
         linkedEdges.remove(linkedListNodes[edge])
     }
 
-    private fun suggestMatching(previousMatching: List<Edge>) {
+    private fun suggestMatching(previousMatching: List<Edge>): ArrayList<Edge> {
         newMatching.clear()
         linkedEdges = LinkedList<Edge>()
         linkedListNodes.clear()
@@ -64,17 +86,14 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
         val p = Random.nextInt(0, previousMatching.count())
         (0..p).forEach { keepEdge(previousMatching[it]) }
 
-        loop@ while (linkedEdges.count > 0) {
-            linkedEdges.forEach { edge ->
+        while (linkedEdges.count > 0) {
+            for (edge in linkedEdges) {
                 if (Random.nextDouble() > parameters.gamma)
-                    return@forEach
+                    continue
                 keepEdge(edge)
-                continue@loop
+                break
             }
         }
-
-
+        return newMatching
     }
-
-
 }
