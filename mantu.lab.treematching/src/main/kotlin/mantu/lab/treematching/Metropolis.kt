@@ -20,6 +20,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
     val adjacentEdges = HashSet<Edge>(maxNeighbors * 2)
     val newMatching = ArrayList<Edge>(nbNodes + 10)
     var linkedEdges = LinkedList<Edge>()
+    var maxObjective : Double = 0.0
 
     init { computeNodeToEdgesDic() }
 
@@ -27,7 +28,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
         var currentMatching = suggestMatching(listOf())
         var currentObjective = computeObjective(currentMatching)
 
-        var maxObjective = currentObjective
+        maxObjective = currentObjective
         var bestMatching = currentMatching
 
         for (i in 0..parameters.nbIterations) {

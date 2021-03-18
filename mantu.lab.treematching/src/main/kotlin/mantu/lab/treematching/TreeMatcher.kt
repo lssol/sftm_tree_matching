@@ -15,7 +15,7 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
             val maxPenalizationParentsChildren: Double = 0.2
     )
 
-    public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>) {
+    public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>): TreeMatcherResponse {
         val tStart = System.currentTimeMillis()
 
         val indexerParameters = InMemoryIndex.Parameters(params.limitNeighbors, params.maxTokenAppearance(sourceNodes.count()))
@@ -37,8 +37,9 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
         val metropolis = Metropolis(edges, sourceNodes.count() + targetNodes.count(), params.limitNeighbors, params.metropolisParameters)
         val matchingEdges = metropolis.run()
 
-        return
+        val tEnd = System.currentTimeMillis()
 
+        return TreeMatcherResponse(matchingEdges, tEnd - tStart, metropolis.maxObjective)
     }
 
     private fun getNoMatchEdges(sourceNodes: List<Node>, targetNodes: List<Node>): List<Edge> {

@@ -15,5 +15,7 @@ public class Edge(
 )
 
 public data class TreeMatcherResponse(
-    val edges
+    val edges: List<Edge>,
+    val computationTime: Long,
+    val cost: Double
 )
