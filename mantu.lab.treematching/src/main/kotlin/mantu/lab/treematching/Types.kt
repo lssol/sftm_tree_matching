@@ -13,3 +13,7 @@ public class Edge(
     val target: Node?,
     val score: Double,
 )
+
+public data class TreeMatcherResponse(
+    val edges
+)

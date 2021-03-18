@@ -2,9 +2,7 @@ package mantu.lab.treematching
 
 import mantu.lab.utils.average
 import mantu.lab.utils.toMap
-import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import kotlin.math.*
 
 public class TreeMatcher(val params: Parameters = Parameters()) {
     public data class Parameters(
@@ -17,17 +15,41 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
             val maxPenalizationParentsChildren: Double = 0.2
     )
 
+    public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>) {
+        val tStart = System.currentTimeMillis()
 
-    private fun computeChildrenPenalization(neighbors: Neighbors, nodes: List<Node>) {
-        val edges = neighbors.toEdges()
-        val averageChildrenCount = nodes.average { it.children.count() }
+        val indexerParameters = InMemoryIndex.Parameters(params.limitNeighbors, params.maxTokenAppearance(sourceNodes.count()))
+        var index = InMemoryIndex.buildIndex(sourceNodes, indexerParameters)
+        val targetIndex = InMemoryIndex.buildIndex(sourceNodes, indexerParameters)
 
-        fun computeRatioChildren(cT: Int, cS: Int, maxPenalization: Int) {
-            val ratioChildren = abs(cS - cT) / averageChildrenCount
-        }
+        addParentToken(sourceNodes, index.index)
+        addParentToken(targetNodes, targetIndex.index)
+
+        // Need to rebuild the index because we added some tokens
+        index = InMemoryIndex.buildIndex(sourceNodes, indexerParameters)
+
+        var neighbors = index.findNeighbors(targetNodes)
+        neighbors = SimilarityPropagation.propagateSimilarity(neighbors, params.propagationParameters)
+
+        val noMatchEdges: List<Edge> = getNoMatchEdges(sourceNodes, targetNodes)
+        val edges = neighbors.toEdges() + noMatchEdges
+
+        val metropolis = Metropolis(edges, sourceNodes.count() + targetNodes.count(), params.limitNeighbors, params.metropolisParameters)
+        val matchingEdges = metropolis.run()
+
+        return
 
     }
-    private fun addParentToken(nodes: List<Node>, index: HashMap<String, List<Node>>) {
+
+    private fun getNoMatchEdges(sourceNodes: List<Node>, targetNodes: List<Node>): List<Edge> {
+        val noMatchScore = 1 / params.noMatchCost
+        val edgesFromSource = sourceNodes.map { Edge(it, null, noMatchScore) }
+        val edgesFromTarget = targetNodes.map { Edge(null, it, noMatchScore) }
+
+        return edgesFromSource + edgesFromTarget
+    }
+
+    private fun addParentToken(nodes: List<Node>, index: HashMap<String, HashSet<Node>>) {
         val rarestToken = nodes
                 .toMap({ it }, { node ->
                     node.value

@@ -6,7 +6,7 @@ import kotlin.math.ln
 class InMemoryIndex(private val params: Parameters) {
     data class Parameters(val maxNeighborsPerNode: Int = 100, val maxTokenAppearance: Int)
 
-    private val index: HashMap<String, MutableList<Node>> = HashMap()
+    public val index: HashMap<String, HashSet<Node>> = HashMap()
     private val nodes: HashSet<Node> = HashSet()
     private val removedTokens: HashSet<String> = HashSet()
     private var idfPrecomputation: Double = 0.0
@@ -40,7 +40,7 @@ class InMemoryIndex(private val params: Parameters) {
             removedTokens.contains(token)                    -> Unit
             nbTokenAppearance >= params.maxTokenAppearance -> removedTokens.add(token)
             index.containsKey(token)                         -> index[token]!!.add(node)
-            else                                             -> index[token] = mutableListOf(node)
+            else                                             -> index[token] = HashSet(mutableSetOf(node))
         }
     }
 
