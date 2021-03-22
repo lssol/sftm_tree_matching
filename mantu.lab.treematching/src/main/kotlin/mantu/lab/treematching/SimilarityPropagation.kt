@@ -4,9 +4,9 @@ import kotlin.math.abs
 
 public class SimilarityPropagation(val params: Parameters) {
     public data class Parameters(
-        val parent: Double = 0.4,
-        val parentInv: Double = 0.8,
-        val envelop: List<Double> = listOf(0.9, 0.1, 0.01)
+        val parent: Double = 0.25,
+        val parentInv: Double = 0.7,
+        val envelop: List<Double> = listOf(0.8, 0.1, 0.01)
     )
 
     companion object {

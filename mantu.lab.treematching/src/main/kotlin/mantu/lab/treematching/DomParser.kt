@@ -63,7 +63,7 @@ public class DomParser(val params: Parameters = Parameters()) {
             val newXPath = getNewXPath(el, parent, partialXPath)
             val tokenizedNode = tokenizeNode(el) + newXPath
             val node = Node(
-                value = tokenizedNode,
+                value = tokenizedNode.toMutableList(),
                 signature = el.attr(params.signatureAttribute),
                 parent = parentNode
             )

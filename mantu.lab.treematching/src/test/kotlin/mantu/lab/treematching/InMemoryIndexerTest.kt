@@ -23,11 +23,11 @@ internal class InMemoryIndexerTest {
             "fox"
         )
 
-        val sourceNodes = sourceList.map { Node(it.split(" ")) }
-        val targetNodes = targetList.map { Node(it.split(" ")) }
+        val sourceNodes = sourceList.map { Node(it.split(" ").toMutableList()) }
+        val targetNodes = targetList.map { Node(it.split(" ").toMutableList()) }
 
         val neighbors = InMemoryIndex
-            .buildIndex(sourceNodes, InMemoryIndexerSettings(10, 10))
+            .buildIndex(sourceNodes, InMemoryIndex.Parameters(10, 10))
             .findNeighbors(targetNodes)
 
         if (neighbors.value.isEmpty())

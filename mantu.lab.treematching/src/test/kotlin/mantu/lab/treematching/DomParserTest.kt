@@ -4,8 +4,9 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Assertions.*
 
 internal class DomParserTest {
-    @Language("HTML")
-    val html = """
+    companion object {
+        @Language("HTML")
+        public val simpleHtml = """
         <!DOCTYPE html>
             <html>
                 <head></head>
@@ -19,10 +20,11 @@ internal class DomParserTest {
                 </body>
             </html>
     """.trimIndent()
+    }
 
     @org.junit.jupiter.api.Test
     fun webpageToTree() {
-        val nodes = DomParser.webpageToTree(html)
+        val nodes = DomParser.webpageToTree(simpleHtml)
         assertEquals(5, nodes.count())
     }
 }

@@ -1,7 +1,10 @@
 package mantu.lab.utils
 
 public fun <T, G> HashMap<T, HashSet<G>>.pushAt(key: T, value: G): HashMap<T, HashSet<G>> {
-    (this[key] ?: hashSetOf()).add(value)
+    if (this[key] != null)
+        this[key]!!.add(value)
+    else
+        this[key] = hashSetOf(value)
 
     return this
 }

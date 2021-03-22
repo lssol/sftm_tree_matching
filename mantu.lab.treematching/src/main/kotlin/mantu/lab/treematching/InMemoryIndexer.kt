@@ -1,6 +1,7 @@
 package mantu.lab.treematching
 
 import kotlin.math.ln
+import kotlin.math.log
 
 
 class InMemoryIndex(private val params: Parameters) {
@@ -13,11 +14,11 @@ class InMemoryIndex(private val params: Parameters) {
 
     companion object InMemoryIndexer {
         public fun buildIndex(sourceNodes: List<Node>, params: Parameters): InMemoryIndex {
-            val index = InMemoryIndex(params)
-            sourceNodes.forEach { node -> node.value.forEach { value -> index.add(value, node) } }
-            index.precomputeIdf()
+            val inMemoryIndex = InMemoryIndex(params)
+            sourceNodes.forEach { node -> node.value.forEach { value -> inMemoryIndex.add(value, node) } }
+            inMemoryIndex.precomputeIdf()
 
-            return index
+            return inMemoryIndex
         }
     }
 
@@ -37,10 +38,13 @@ class InMemoryIndex(private val params: Parameters) {
         val nbTokenAppearance = (index[token]?.count() ?: 0) + 1
 
         when {
-            removedTokens.contains(token)                    -> Unit
-            nbTokenAppearance >= params.maxTokenAppearance -> removedTokens.add(token)
-            index.containsKey(token)                         -> index[token]!!.add(node)
-            else                                             -> index[token] = HashSet(mutableSetOf(node))
+            removedTokens.contains(token)                 -> Unit
+            nbTokenAppearance > params.maxTokenAppearance -> {
+                removedTokens.add(token)
+                index.remove(token)
+            }
+            index.containsKey(token)                      -> index[token]!!.add(node)
+            else                                          -> index[token] = HashSet(mutableSetOf(node))
         }
     }
 
@@ -63,7 +67,9 @@ class InMemoryIndex(private val params: Parameters) {
         return truncateResults(hits)
     }
 
-    private fun precomputeIdf() { idfPrecomputation = ln(nodes.count().toDouble()) }
+    private fun precomputeIdf() {
+        idfPrecomputation = ln(nodes.count().toDouble())
+    }
 
     private fun truncateResults(hits: HashMap<Node, Double>): HashMap<Node, Double> {
         val map = hits

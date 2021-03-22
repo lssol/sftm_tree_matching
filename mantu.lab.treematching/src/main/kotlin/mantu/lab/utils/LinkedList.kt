@@ -1,16 +1,17 @@
 package mantu.lab.utils
 
-import com.sun.org.apache.xml.internal.dtm.ref.EmptyIterator
 import org.junit.jupiter.api.fail
 
 class LinkedList<T> : Iterable<T> {
     public var head: LinkedListNode<T>? = null
     public var tail: LinkedListNode<T>? = null
     public var count: Int = 0
+    public var nodes : HashSet<LinkedListNode<T>> = hashSetOf()
 
     public fun add(value: T): LinkedListNode<T> {
         count++
         val newNode = LinkedListNode(value)
+        nodes.add(newNode)
         when (head) {
             null -> {
                 head = newNode
@@ -27,10 +28,11 @@ class LinkedList<T> : Iterable<T> {
     }
 
     public fun remove(listNode: LinkedListNode<T>?) {
-        if (listNode == null)
+        if (listNode == null || !nodes.contains(listNode))
             return
 
         count--
+        nodes.remove(listNode)
 
         if (listNode == head)
             head = head?.next
@@ -55,7 +57,7 @@ class LinkedListNode<T>(
 )
 
 class LinkedListIterator<T> ( val list : LinkedList<T>, var current : LinkedListNode<T>? = list.head ) : Iterator<T> {
-    override fun hasNext(): Boolean = current?.next != null
+    override fun hasNext(): Boolean = current != null
     override fun next(): T {
         if (current == null)
             fail("Empty LinkedList Iterator")

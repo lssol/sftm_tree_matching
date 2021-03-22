@@ -8,12 +8,18 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
     public data class Parameters(
             val propagationParameters: SimilarityPropagation.Parameters = SimilarityPropagation.Parameters(),
             val metropolisParameters: Metropolis.Parameters = Metropolis.Parameters(),
-            val noMatchCost: Double = 4.5,
+            val noMatchCost: Double = 1.2,
             val limitNeighbors: Int = 100,
             val maxTokenAppearance: (nbNodes: Int) -> Int = { sqrt(it.toDouble()).roundToInt() },
             val maxPenalizationChildren: Double = 0.4,
             val maxPenalizationParentsChildren: Double = 0.2
     )
+
+    companion object {
+        public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>, params: Parameters = Parameters()): TreeMatcherResponse {
+            return TreeMatcher().matchTrees(sourceNodes, targetNodes)
+        }
+    }
 
     public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>): TreeMatcherResponse {
         val tStart = System.currentTimeMillis()
@@ -59,8 +65,7 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
                 })
         nodes.forEach {
             if (it.parent != null && rarestToken.containsKey(it.parent))
-                it.value.add("#C_{${rarestToken[it.parent]}")
+                it.value.add("#C_${rarestToken[it.parent]}")
         }
     }
-
 }

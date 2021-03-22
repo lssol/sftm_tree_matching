@@ -9,10 +9,9 @@ import kotlin.random.Random
 
 public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbors: Int, val parameters: Parameters) {
     public data class Parameters(
-            val gamma: Double = 1.0,
-            val lambda: Double = 2.5,
-            val nbIterations: Int = 1,
-            val metropolisNormalisation: Boolean = true
+        val gamma: Double = 1.0,
+        val lambda: Double = 0.7,
+        val nbIterations: Int = 1,
     )
 
     val nodeToEdges: HashMap<Node, HashSet<Edge>> = hashMapOf()
@@ -20,9 +19,12 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
     val adjacentEdges = HashSet<Edge>(maxNeighbors * 2)
     val newMatching = ArrayList<Edge>(nbNodes + 10)
     var linkedEdges = LinkedList<Edge>()
-    var maxObjective : Double = 0.0
+    var maxObjective: Double = 0.0
+    val sortedEdges = edges.sortedByDescending { edge -> edge.score }
 
-    init { computeNodeToEdgesDic() }
+    init {
+        computeNodeToEdgesDic()
+    }
 
     public fun run(): ArrayList<Edge> {
         var currentMatching = suggestMatching(listOf())
@@ -31,7 +33,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
         maxObjective = currentObjective
         var bestMatching = currentMatching
 
-        for (i in 0..parameters.nbIterations) {
+        for (i in 1 until parameters.nbIterations) {
             val matching = suggestMatching(currentMatching)
             val objective = computeObjective(matching)
             val acceptanceRatio = objective / currentObjective
@@ -49,7 +51,7 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
     }
 
     private fun computeNodeToEdgesDic() {
-        edges.forEach {
+        sortedEdges.forEach {
             when {
                 it.source == null -> nodeToEdges.pushAt(it.target!!, it)
                 it.target == null -> nodeToEdges.pushAt(it.source, it)
@@ -61,31 +63,31 @@ public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbor
     private fun getAdjacentEdges(edge: Edge): HashSet<Edge> {
         adjacentEdges.clear()
         if (edge.source != null)
-            adjacentEdges.addAll(nodeToEdges[edge.source]!!)
+            adjacentEdges.addAll(nodeToEdges[edge.source] ?: emptyList())
         if (edge.target != null)
-            adjacentEdges.addAll(nodeToEdges[edge.target]!!)
-        adjacentEdges.remove(edge)
+            adjacentEdges.addAll(nodeToEdges[edge.target] ?: emptyList())
         return adjacentEdges
     }
 
     private fun computeObjective(matching: List<Edge>): Double =
-            matching.average { it.score }
+        matching.average { it.score }
 
     private fun keepEdge(edge: Edge) {
         newMatching.add(edge)
         val adjacentEdges = getAdjacentEdges(edge)
         adjacentEdges.forEach { linkedEdges.remove(linkedListNodes[it]) }
-        linkedEdges.remove(linkedListNodes[edge])
     }
 
     private fun suggestMatching(previousMatching: List<Edge>): ArrayList<Edge> {
         newMatching.clear()
-        linkedEdges = LinkedList<Edge>()
+        linkedEdges = LinkedList()
         linkedListNodes.clear()
-        edges.forEach {  linkedListNodes[it] = linkedEdges.add(it) }
+        sortedEdges.forEach { linkedListNodes[it] = linkedEdges.add(it) }
 
-        val p = Random.nextInt(0, previousMatching.count())
-        (0..p).forEach { keepEdge(previousMatching[it]) }
+        if (previousMatching.count() != 0) {
+            val p = Random.nextInt(0, previousMatching.count())
+            (0..p).forEach { keepEdge(previousMatching[it]) }
+        }
 
         while (linkedEdges.count > 0) {
             for (edge in linkedEdges) {
