@@ -13,11 +13,7 @@ internal class TreeMatcherTest {
         val sourceNode = DomParser.webpageToTree(source)
         val targetNode  = DomParser.webpageToTree(source)
 
-        val tStart = System.currentTimeMillis()
         val matching = TreeMatcher.matchTrees(sourceNode, targetNode)
-        val tEnd = System.currentTimeMillis()
-
-        println("The pages were matched in ${tEnd - tStart}ms")
     }
 
     private fun analyzeResults(sourceNodes: List<Node>, targetNodes: List<Node>, matching: List<Edge>): Double {
