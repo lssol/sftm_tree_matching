@@ -17,8 +17,15 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
 
     companion object {
         public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>, params: Parameters = Parameters()): TreeMatcherResponse {
-            return TreeMatcher().matchTrees(sourceNodes, targetNodes)
+            return TreeMatcher(params).matchTrees(sourceNodes, targetNodes)
         }
+    }
+
+    public fun matchTrees(source: String, target: String): TreeMatcherResponse {
+        val sourceNodes = DomParser.webpageToTree(source)
+        val targetNodes = DomParser.webpageToTree(target)
+
+        return matchTrees(sourceNodes, targetNodes)
     }
 
     public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>): TreeMatcherResponse {

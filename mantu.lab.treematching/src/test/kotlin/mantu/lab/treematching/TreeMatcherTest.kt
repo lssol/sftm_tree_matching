@@ -22,14 +22,6 @@ internal class TreeMatcherTest {
         val commonSignatures = sourceSignatures.intersect(targetSignatures)
 
         val edges = matching.distinct()
-        val nbNoMatch = edges.count {
-            commonSignatures.contains(it.source?.signature ?: it.target?.signature)
-                    && (it.source == null || it.target == null)
-        }
-
-        val nbMismatch = edges.count {
-            it.source != null && it.target != null && it.source!!.signature != it.target!!.signature
-        }
         val goodMatches = edges.count {
             it.source != null && it.target != null && it.source!!.signature == it.target!!.signature
         }
