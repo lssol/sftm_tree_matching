@@ -3,7 +3,7 @@ package mantu.lab.treematching
 // Not a data class because I want comparison to be by reference (not by value)
 public class Node(
     val value: MutableList<String>,
-    val xPath: String,
+    val xPath: String = "",
     val signature: String = "",
     val parent: Node? = null,
     var children: MutableList<Node> = mutableListOf(),
