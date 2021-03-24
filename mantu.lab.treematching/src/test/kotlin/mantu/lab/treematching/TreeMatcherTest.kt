@@ -10,10 +10,7 @@ internal class TreeMatcherTest {
     fun matchSimpleTrees() {
         val source = DomParserTest.simpleHtml
 
-        val sourceNode = DomParser.webpageToTree(source)
-        val targetNode  = DomParser.webpageToTree(source)
-
-        val matching = TreeMatcher.matchTrees(sourceNode, targetNode)
+        val matching = TreeMatcher.matchTrees(source, source)
     }
 
     private fun analyzeResults(sourceNodes: List<Node>, targetNodes: List<Node>, matching: List<Edge>): Double {

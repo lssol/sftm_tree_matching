@@ -1,6 +1,6 @@
 package mantu.lab.treematching
 
-public class Neighbors {
+internal class Neighbors {
     val value : HashMap<Node, HashMap<Node, Double>> = HashMap()
 
     public fun score(source: Node, target: Node) = value[target]?.get(source) ?: 0.0

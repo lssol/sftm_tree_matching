@@ -7,8 +7,31 @@ import org.jsoup.nodes.Element
 
 
 public class DomParser(val params: Parameters = Parameters()) {
-    companion object { public fun webpageToTree(source: String) = DomParser().webpageToTree(source) }
+    companion object {
+        /**
+         * Parse an HTML string into a list of Node.
+         * @param source must be HTML. It will be parsed using Jsoup
+         * @param params parameters of the parsing
+         * @return A list of the nodes parsed.
+         * The Node data structure is internal to this library
+         */
+        @JvmStatic
+        public fun webpageToTree(source: String, params: Parameters = Parameters()): List<Node> { return DomParser(params).webpageToTree(source) }
+    }
+
+    /**
+     * The parameters of the parsing
+     * @param signatureAttribute is the name of the attribute uniquely identifying a node. This attribute will be ignored by the algorithm but kept when parsing the HTML
+     * @param maxTokensPerValue maximum tokens per attribute value. Beyond this number, the attribute value is not tokenized. All attributes values are tokenized at parsing times. When an attribute value is too large, too many tokens are produced which is detrimental for the quality of the algorithm and its speed.
+     */
     public data class Parameters(val signatureAttribute: String = "signature", val maxTokensPerValue: Int = 8)
+
+    /**
+     * Parse an HTML string into a list of Node.
+     * @param source must be HTML. It will be parsed using Jsoup
+     * @return A list of the nodes parsed.
+     * The Node data structure is internal to this library
+     */
     public fun webpageToTree(source: String) : List<Node> {
         val doc = Jsoup.parse(source)
         return domToTree(doc)

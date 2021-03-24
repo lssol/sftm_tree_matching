@@ -1,10 +1,9 @@
 package mantu.lab.treematching
 
-import mantu.lab.utils.average
 import mantu.lab.utils.toMap
 import kotlin.math.*
 
-public class TreeMatcher(val params: Parameters = Parameters()) {
+internal class TreeMatcher(val params: Parameters = Parameters()) {
     public data class Parameters(
             val propagationParameters: SimilarityPropagation.Parameters = SimilarityPropagation.Parameters(),
             val metropolisParameters: Metropolis.Parameters = Metropolis.Parameters(),
@@ -16,19 +15,40 @@ public class TreeMatcher(val params: Parameters = Parameters()) {
     )
 
     companion object {
+        /**
+         * Compute a node-by-node matching between two trees
+         * @param sourceNodes the list of nodes in the first tree
+         * @param targetNodes the list of nodes in the second tree
+         * @param params the parameters of the matching
+         * @return the result of the matching. In particular, the "edges" member contains the list of individual node-to-node matches. If a node was not match, it's corresponding match will be null
+         */
+        @JvmStatic
         public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>, params: Parameters = Parameters()): TreeMatcherResponse {
             return TreeMatcher(params).matchTrees(sourceNodes, targetNodes)
         }
 
-        public fun matchTrees(source: String, target: String): TreeMatcherResponse {
+        /**
+         * Compute a node-by-node matching between two webpages
+         * @param source the HTML of the first webpage
+         * @param target the HTML of the second webpage
+         * @param params the parameters of the matching
+         * @return the result of the matching. In particular, the "edges" member contains the list of individual node-to-node matches. If a node was not match, it's corresponding match will be null
+         */
+        @JvmStatic
+        public fun matchTrees(source: String, target: String, params: Parameters = Parameters()): TreeMatcherResponse {
             val sourceNodes = DomParser.webpageToTree(source)
             val targetNodes = DomParser.webpageToTree(target)
 
-            return matchTrees(sourceNodes, targetNodes)
+            return matchTrees(sourceNodes, targetNodes, params)
         }
     }
 
-
+    /**
+     * Compute a node-by-node matching between two trees
+     * @param sourceNodes the list of nodes in the first tree
+     * @param targetNodes the list of nodes in the second tree
+     * @return the result of the matching. In particular, the "edges" member contains the list of individual node-to-node matches. If a node was not match, it's corresponding match will be null
+     */
     public fun matchTrees(sourceNodes: List<Node>, targetNodes: List<Node>): TreeMatcherResponse {
         val tStart = System.currentTimeMillis()
 

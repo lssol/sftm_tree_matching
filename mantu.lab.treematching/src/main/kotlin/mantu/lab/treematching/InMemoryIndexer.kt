@@ -1,13 +1,16 @@
 package mantu.lab.treematching
 
 import kotlin.math.ln
-import kotlin.math.log
 
 
-class InMemoryIndex(private val params: Parameters) {
-    data class Parameters(val maxNeighborsPerNode: Int = 100, val maxTokenAppearance: Int)
+public class InMemoryIndex(private val params: Parameters) {
+    /**
+     * @param maxNeighborsPerNode the maximum number of neighbors allowed per node. Beyond this value, only the closest neighbors are kept. This helps with computation times.
+     * @param maxTokenAppearance tokens appearingn more than this value are removed. Tokens that appear too many times carry very few information yet cause high overhead.
+     */
+    public data class Parameters(val maxNeighborsPerNode: Int = 100, val maxTokenAppearance: Int)
 
-    public val index: HashMap<String, HashSet<Node>> = HashMap()
+    internal val index: HashMap<String, HashSet<Node>> = HashMap()
     private val nodes: HashSet<Node> = HashSet()
     private val removedTokens: HashSet<String> = HashSet()
     private var idfPrecomputation: Double = 0.0
@@ -22,7 +25,7 @@ class InMemoryIndex(private val params: Parameters) {
         }
     }
 
-    public fun findNeighbors(targets: List<Node>): Neighbors {
+    internal fun findNeighbors(targets: List<Node>): Neighbors {
         val neighbors = Neighbors()
         targets.forEach { target ->
             val results = queryIndex(target.value)

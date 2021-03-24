@@ -2,7 +2,7 @@ package mantu.lab.treematching
 
 import kotlin.math.abs
 
-public class SimilarityPropagation(val params: Parameters) {
+internal class SimilarityPropagation(val params: Parameters) {
     public data class Parameters(
         val parent: Double = 0.25,
         val parentInv: Double = 0.7,
@@ -10,7 +10,7 @@ public class SimilarityPropagation(val params: Parameters) {
     )
 
     companion object {
-        public fun propagateSimilarity(neighbors: Neighbors, params: Parameters): Neighbors {
+        internal fun propagateSimilarity(neighbors: Neighbors, params: Parameters): Neighbors {
             val propagation = SimilarityPropagation(params)
             var n = neighbors
             params.envelop.forEach {

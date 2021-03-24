@@ -7,20 +7,21 @@ import mantu.lab.utils.pushAt
 import kotlin.random.Random
 
 
-public class Metropolis(val edges: List<Edge>, val nbNodes: Int, val maxNeighbors: Int, val parameters: Parameters) {
+internal class Metropolis(val edges: List<Edge>, nbNodes: Int, val maxNeighbors: Int, val parameters: Parameters) {
     public data class Parameters(
         val gamma: Double = 1.0,
         val lambda: Double = 0.7,
         val nbIterations: Int = 1,
     )
 
-    val nodeToEdges: HashMap<Node, HashSet<Edge>> = hashMapOf()
-    val linkedListNodes = HashMap<Edge, LinkedListNode<Edge>>(edges.count())
-    val adjacentEdges = HashSet<Edge>(maxNeighbors * 2)
-    val newMatching = ArrayList<Edge>(nbNodes + 10)
     var linkedEdges = LinkedList<Edge>()
     var maxObjective: Double = 0.0
-    val sortedEdges = edges.sortedByDescending { edge -> edge.score }
+    val adjacentEdges = HashSet<Edge>(maxNeighbors * 2)
+    val nodeToEdges: HashMap<Node, HashSet<Edge>> = hashMapOf()
+
+    private val linkedListNodes = HashMap<Edge, LinkedListNode<Edge>>(edges.count())
+    private val newMatching = ArrayList<Edge>(nbNodes + 10)
+    private val sortedEdges = edges.sortedByDescending { edge -> edge.score }
 
     init {
         computeNodeToEdgesDic()
