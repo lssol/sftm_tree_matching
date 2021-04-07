@@ -2,7 +2,7 @@ package mantu.lab.treematching
 
 import kotlin.math.abs
 
-internal class SimilarityPropagation(val params: Parameters) {
+class SimilarityPropagation(val params: Parameters) {
     public data class Parameters(
         val parent: Double = 0.25,
         val parentInv: Double = 0.7,

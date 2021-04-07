@@ -7,7 +7,7 @@ import mantu.lab.utils.pushAt
 import kotlin.random.Random
 
 
-internal class Metropolis(val edges: List<Edge>, nbNodes: Int, val maxNeighbors: Int, val parameters: Parameters) {
+class Metropolis(val edges: List<Edge>, nbNodes: Int, val maxNeighbors: Int, val parameters: Parameters) {
     public data class Parameters(
         val gamma: Double = 1.0,
         val lambda: Double = 0.7,

@@ -9,8 +9,7 @@ internal class TreeMatcherTest {
     @Test
     fun matchSimpleTrees() {
         val source = DomParserTest.simpleHtml
-
-        val matching = TreeMatcher.matchTrees(source, source)
+        val matching = TreeMatcher.matchWebpages(source, source)
     }
 
     private fun analyzeResults(sourceNodes: List<Node>, targetNodes: List<Node>, matching: List<Edge>): Double {
@@ -35,10 +34,10 @@ internal class TreeMatcherTest {
 
         val sourceNodes = DomParser.webpageToTree(source)
         val targetNodes = DomParser.webpageToTree(target)
-        TreeMatcher.matchTrees(sourceNodes, targetNodes)
+        TreeMatcher().matchTrees(sourceNodes, targetNodes)
 
         val tStart = System.currentTimeMillis()
-        val matching = TreeMatcher.matchTrees(sourceNodes, targetNodes)
+        val matching = TreeMatcher().matchTrees(sourceNodes, targetNodes)
         val tEnd = System.currentTimeMillis()
 
         println("The pages were matched in ${tEnd - tStart}ms")
