@@ -1,4 +1,21 @@
-﻿<html style="font-size: 10px;font-family: Roboto, Arial, sans-serif; " lang="fr-FR" signature="2QBw4Mz9ad9_F"><head signature="w-HenInsBG"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2020-10-23" content="AhbmRDASY7NuOZD9cFMgQihZ+mQpCwa8WTGdTx82vSar9ddBQbziBfZXZg+ScofvEZDdHQNCEwz4yM7HjBS9RgkAAABneyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJDb21wb25lbnRzVjAiLCJleHBpcnkiOjE2MDM0ODY4NTYsImlzU3ViZG9tYWluIjp0cnVlfQ==" signature="6ko0-MsaL1a"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2020-10-27" content="Av2+1qfUp3MwEfAFcCccykS1qFmvLiCrMZ//pHQKnRZWG9dldVo8HYuJmGj2wZ7nDg+xE4RQMQ+Ku1zKM3PvYAIAAABmeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZS5jb206NDQzIiwiZmVhdHVyZSI6IldlYkNvbXBvbmVudHNWMCIsImV4cGlyeSI6MTYwMzgzNjc3MiwiaXNTdWJkb21haW4iOnRydWV9" signature="8meDws8Ja2E"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2021-01-08" content="AixUK+8UEShlt6+JX1wy9eg+XL+eV5PYSEDPH3C90JNVbIkE1Rg1FyVUfu2bZ/y6Pm1xbPLzuwHYHjv4uKPNnA4AAABqeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXByb2QuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJDb21wb25lbnRzVjAiLCJleHBpcnkiOjE2MTAwNjQ0MjMsImlzU3ViZG9tYWluIjp0cnVlfQ==" signature="3BH1hd5JnvD">
+﻿<!--
+  ~ Tree Matching library based on the SFTM algorithm.
+  ~
+  ~ Copyright (C) 2021  Mantu, Sacha Brisset.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see https://www.gnu.org/licenses/.
+  -->
+
+<html style="font-size: 10px;font-family: Roboto, Arial, sans-serif; " lang="fr-FR" signature="2QBw4Mz9ad9_F"><head signature="w-HenInsBG"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2020-10-23" content="AhbmRDASY7NuOZD9cFMgQihZ+mQpCwa8WTGdTx82vSar9ddBQbziBfZXZg+ScofvEZDdHQNCEwz4yM7HjBS9RgkAAABneyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJDb21wb25lbnRzVjAiLCJleHBpcnkiOjE2MDM0ODY4NTYsImlzU3ViZG9tYWluIjp0cnVlfQ==" signature="6ko0-MsaL1a"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2020-10-27" content="Av2+1qfUp3MwEfAFcCccykS1qFmvLiCrMZ//pHQKnRZWG9dldVo8HYuJmGj2wZ7nDg+xE4RQMQ+Ku1zKM3PvYAIAAABmeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZS5jb206NDQzIiwiZmVhdHVyZSI6IldlYkNvbXBvbmVudHNWMCIsImV4cGlyeSI6MTYwMzgzNjc3MiwiaXNTdWJkb21haW4iOnRydWV9" signature="8meDws8Ja2E"><meta http-equiv="origin-trial" data-feature="Web Components V0" data-expires="2021-01-08" content="AixUK+8UEShlt6+JX1wy9eg+XL+eV5PYSEDPH3C90JNVbIkE1Rg1FyVUfu2bZ/y6Pm1xbPLzuwHYHjv4uKPNnA4AAABqeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXByb2QuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJDb21wb25lbnRzVjAiLCJleHBpcnkiOjE2MTAwNjQ0MjMsImlzU3ViZG9tYWluIjp0cnVlfQ==" signature="3BH1hd5JnvD">
 
     <link rel="shortcut icon" href="https://s.ytimg.com/yts/img/favicon-vfl8qSV2F.ico" type="image/x-icon" signature="oReZHF5Zed3"><link rel="icon" href="https://s.ytimg.com/yts/img/favicon_32-vflOogEID.png" sizes="32x32" signature="hAXOQ8fO-sj"><link rel="icon" href="https://s.ytimg.com/yts/img/favicon_48-vflVjB_Qk.png" sizes="48x48" signature="HEY9IxKIhN9"><link rel="icon" href="https://s.ytimg.com/yts/img/favicon_96-vflW9Ec0w.png" sizes="96x96" signature="UOaRtwbnw6L"><link rel="icon" href="https://s.ytimg.com/yts/img/favicon_144-vfliLAfaB.png" sizes="144x144" signature="UHzuuFb9gtO"><title signature="Dv0WiNEdM2G">YouTube</title><link rel="preload" href="https://i.ytimg.com/generate_204" as="fetch" signature="16D0bVaFvgf">
 
