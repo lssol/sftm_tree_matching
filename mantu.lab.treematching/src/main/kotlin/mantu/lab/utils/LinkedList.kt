@@ -17,8 +17,6 @@
 
 package mantu.lab.utils
 
-import mantu.lab.treematching.Metropolis
-import org.junit.jupiter.api.fail
 
 class LinkedList<T> : Iterable<T> {
     public var head: LinkedListNode<T>? = null
@@ -78,7 +76,7 @@ class LinkedListIterator<T> ( val list : LinkedList<T>, var current : LinkedList
     override fun hasNext(): Boolean = current != null
     override fun next(): T {
         if (current == null)
-            fail("Empty LinkedList Iterator")
+            error("Empty LinkedList Iterator")
 
         val res = current!!
         current = res.next
